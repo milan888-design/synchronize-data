@@ -1,0 +1,370 @@
+export changes from server to another
+Protected Sub subobjext2objext(ByVal sender As Object, ByVal e As System.EventArgs)
+        'Block 0 read parameters and connection initialization
+        'lbl_timerstarts.Text = DateTime.Now.ToString
+        'transfer the following code to export button program
+        Dim count1, pauseperiod, maxcount, pollingperiod As Integer
+        Dim str, strProgramParameter, ThisConnType, FromConnType, ToConnType As String
+        'the following matches table st_program_parameter.
+        Dim input__id, input_ProgramType, input_ProgramExecutableFile, input_ProgramName, input_ThisInstanceKey, input_ThisConnectionString, input_FromInstanceKey, input_FromDB, input_FromTable, input_FromConnectionString, input_FromCurrentDBVersion, input_FromLastVersionUsed, input_ToInstanceKkey, input_ToDB, input_ToTable, input_ToConnectionString, input_Description, input_active_flag, input_IncludeFusion, input_Status, input_ThisDBType, input_FromDBType, input_ToDBType, input_ThisConnType, input_FromConnType, input_ToConnType As String
+        input__id = lbl_id.Text.Trim()
+        input_ProgramType = lbl_ProgramType.Text.Trim()
+        input_ProgramExecutableFile = lbl_ProgramExecutableFile.Text.Trim()
+        input_ProgramName = lbl_ProgramName.Text.Trim()
+        input_ThisInstanceKey = lbl_ThisInstanceKey.Text.Trim()
+        input_ThisConnectionString = lbl_ThisConnectionString.Text.Trim()
+        input_FromInstanceKey = lbl_FromInstanceKey.Text.Trim()
+        input_FromDB = lbl_FromDB.Text.Trim()
+        input_FromTable = lbl_FromTable.Text.Trim()
+        input_FromConnectionString = lbl_FromConnectionString.Text.Trim()
+        input_FromCurrentDBVersion = lbl_FromCurrentDBVersion.Text.Trim()
+        input_FromLastVersionUsed = lbl_FromLastVersionUsed.Text.Trim()
+        input_ToInstanceKkey = lbl_ToInstancekey.Text.Trim()
+        input_ToDB = lbl_ToDB.Text.Trim()
+        input_ToTable = lbl_ToTable.Text.Trim()
+        input_ToConnectionString = lbl_ToConnectionString.Text.Trim()
+        input_Description = lbl_Description.Text.Trim()
+        input_active_flag = lbl_active_flag.Text.Trim()
+        input_IncludeFusion = lbl_includeFusion.Text.Trim()
+        input_Status = lbl_status.Text.Trim()
+        input_ThisDBType = lbl_ThisDBType.Text.Trim()
+        input_FromDBType = lbl_FromDBType.Text.Trim()
+        input_ToDBType = lbl_ToDBType.Text.Trim()
+
+        input_ThisConnType = lbl_ThisConnType.Text.Trim()
+        input_FromConnType = lbl_FromConnType.Text.Trim()
+        input_ToConnType = lbl_ToconnType.Text.Trim()
+        ThisConnType = lbl_ThisConnType.Text.Trim()
+        FromConnType = lbl_FromConnType.Text.Trim()
+        ToConnType = lbl_ToconnType.Text.Trim()
+
+        lbl_starttimestamp.Text = DateTime.Now.ToString
+        lbl_endtimestamp.Text = ""
+
+        count1 = 1
+        maxcount = Convert.ToInt64(fld_maxcount_export.Text)
+        pollingperiod = Convert.ToInt64(fld_pollingperiod_export.Text)
+        pauseperiod = Convert.ToInt64(fld_pauseperiod_export.Text)
+        'ThisConnType = "OdbcConnection"
+        'FromConnType = "SQLConnection"
+        'ToConnType = "OdbcConnection"
+        'MsgBox(ThisConnType)
+        'MsgBox(FromConnType)
+        'MsgBox(ToConnType)
+        'beginning of loop to count number of iteration for the program
+
+        'For Odbc source
+        Dim OdbcConnectionFrom As New System.Data.Odbc.OdbcConnection
+        Dim OdbcReaderFrom As System.Data.Odbc.OdbcDataReader
+        Dim OdbcCommandFrom As New System.Data.Odbc.OdbcCommand
+
+        Dim OdbcConnectionFrom2 As New System.Data.Odbc.OdbcConnection
+        Dim OdbcReaderFrom2 As System.Data.Odbc.OdbcDataReader
+        Dim OdbcCommandFrom2 As New System.Data.Odbc.OdbcCommand
+
+        'For Odbc Target
+        Dim OdbcConnectionTo As New System.Data.Odbc.OdbcConnection
+        Dim OdbcReaderTo As System.Data.Odbc.OdbcDataReader
+        Dim OdbcCommandTo As New System.Data.Odbc.OdbcCommand
+
+        'For Odbc progrm parameter file or this can be from or to
+        Dim OdbcConnectionThis As New System.Data.Odbc.OdbcConnection
+        Dim OdbcReaderThis As System.Data.Odbc.OdbcDataReader
+        Dim OdbcCommandThis As New System.Data.Odbc.OdbcCommand
+
+        Dim OdbcConnectionThis2 As New System.Data.Odbc.OdbcConnection
+        Dim OdbcReaderThis2 As System.Data.Odbc.OdbcDataReader
+        Dim OdbcCommandThis2 As New System.Data.Odbc.OdbcCommand
+
+        If ThisConnType = "OdbcConnection" Then
+            OdbcConnectionThis.ConnectionString = input_ThisConnectionString
+            OdbcCommandThis.Connection = OdbcConnectionThis
+            'OdbcConnectionThis.Open()
+            OdbcConnectionThis2.ConnectionString = input_ThisConnectionString
+            OdbcCommandThis2.Connection = OdbcConnectionThis2
+            'OdbcConnectionThis2.Open()
+        End If
+
+        If FromConnType = "OdbcConnection" Then
+            OdbcConnectionFrom.ConnectionString = input_FromConnectionString
+            OdbcCommandFrom.Connection = OdbcConnectionFrom
+            'OdbcConnectionFrom.Open()
+            OdbcConnectionFrom2.ConnectionString = input_FromConnectionString
+            OdbcCommandFrom2.Connection = OdbcConnectionFrom2
+            'OdbcConnectionFrom2.Open()
+        End If
+        If ToConnType = "OdbcConnection" Then
+            OdbcConnectionTo.ConnectionString = input_ToConnectionString
+            OdbcCommandTo.Connection = OdbcConnectionTo
+            OdbcConnectionTo.Open()
+        End If
+        'END OF CONNCETION INITIATIALIZATION=============================================
+
+        Do While count1 <= maxcount
+            If count1 > pauseperiod Then
+                str = InputBox("Enter 0 stop or 1 start")
+                pauseperiod = InputBox("Enter next pause point")
+                If Convert.ToString(pauseperiod) = "" Then
+                    pauseperiod = 10
+                End If
+            End If
+            If str = "0" Then
+                MsgBox("stopped")
+                Exit Do
+            End If
+            'MsgBox(count1)
+            'actual code to be executed
+            'BLOCK A: delcare vaiables
+            'to read pointers for the last row and current row number from st_object_extension. Import reads from DF st_object_extension_outbox
+            'export reads from local server DB st_object_extension
+            'the following varaible matches table st_object_extension
+            Dim v_FromCurrenDBtVersion, v_FromLastVersionUsed As Integer
+            Dim strsql, strsql2, v_ServerVMDBName, v_exportprogram, v_importprogram, strsqlmax, strsqlchecklatest, strsql3update As String
+            'For import and export both, this is is the DB server data getting imported or exported from. For DF, this is DF instance
+            v_ServerVMDBName = lbl_ThisInstanceKey.Text
+            'v_exportprogram = lbl_Rowid.Text
+            'v_importprogram = lbl_Rowid.Text
+
+            'these are columns being imported or exported from st_object_extension
+            Dim v_object_database, v_object_Table, v_object_PK_attribute, v_object_attribute, v_object_id, v_object_value, v_object_value_type, v_object_value_UOM, v_object_value_data_type, v_object_operation, v_object_operation_command, v_extension_attribute, v_extension_value, v_extension_value_UOM, v_extension_value_data_type, v_HostServerID, v_UpdatedBy, v_DataModel, v_VersionSequence, v_SourceRecordId, v_object_id_old, v_object_value_old, v_Comment, v_Col_Changed, v_ForServerVmDB, v_UpdateDateTime, v_InsertDateTime, v_source_id As String
+
+
+
+            'BLOCK B: read pointers from program parameter file
+            'strsql is to read from program_parameter within your own DB: Sitaware, DF1, etc. For export program parameter pointer is local st ob ex
+            'specific program is read
+            strsql = "Select FromLastVersionUsed FROM ST_PROGRAM_PARAMETER where id="
+            strsql = strsql + "'" + input__id + "';"
+            'strsql = strsql + "'" + lbl_id.Text + "';"
+            'This and the odbc are identical. Connection type forces two separate codes
+            If ThisConnType = "OdbcConnection" Then
+                OdbcConnectionThis.Open()
+                OdbcCommandThis.CommandText = strsql
+                Try
+                    OdbcReaderThis = OdbcCommandThis.ExecuteReader()
+                    int_update_result = 1
+                    While (OdbcReaderThis.Read() = True)
+                        'Dim str_insert_result As String
+                        v_FromLastVersionUsed = OdbcReaderThis(0).ToString()
+                        lbl_strsqlresult1.Text = OdbcReaderThis(0).ToString()
+                    End While
+                Catch ex As Exception
+                    Console.WriteLine(ex.Message)
+                    int_update_result = 0
+                    lbl_strsqlresult1.Text = "error in getting ODBC v_FromLastVersionUsed"
+                End Try
+                OdbcConnectionThis.Close()
+            End If
+            MsgBox(v_FromLastVersionUsed)
+            'This and the odbc are identical. Connection type forces two separate codes
+
+
+            'strsql is to read last row or that needs to be read. This would be different for SQLITE and PostGres
+            'max function can be costly, so it is better to find more efficient fuction. However, the following code would be different for DB type
+            strsqlmax = "select max(id) v_FromCurrenDBtVersion from ST_OBJECT_EXTENSION;"
+            'This and the odbc are identical. Connection type forces two separate codes
+            If FromConnType = "OdbcConnection" Then
+                OdbcConnectionFrom2.Open()
+                OdbcCommandFrom2.CommandText = strsqlmax
+                'MsgBox(lbl_FromConnectionString.Text)
+                'MsgBox(strsqlmax)
+                Try
+                    OdbcReaderFrom2 = OdbcCommandFrom2.ExecuteReader()
+                    int_update_result = 1
+                    While (OdbcReaderFrom2.Read() = True)
+                        'Dim str_insert_result As String
+                        v_FromCurrenDBtVersion = OdbcReaderFrom2(0).ToString()
+                        lbl_strsqlresult2.Text = OdbcReaderFrom2(0).ToString()
+                        'MsgBox(lbl_strsqlresult2.Text)
+                    End While
+                Catch ex As Exception
+                    Console.WriteLine(ex.Message)
+                    int_update_result = 0
+                    lbl_strsqlresult2.Text = "error in getting ODBC v_FromCurrenDBtVersion"
+                End Try
+                OdbcConnectionFrom2.Close()
+            End If
+            MsgBox(v_FromCurrenDBtVersion)
+            'This and the odbc are identical. Connection type forces two separate codes
+            'END OF READING FROM PARA FILE===================================================
+
+            'BLOCK C: actual reading from obj ext and writing to target obj ext 
+            'sql to get data FROM is same for SQL and Odbc
+
+            'strsql = "select OE.object_database,OE.object_Table,OE.object_PK_attribute,OE.object_attribute,OE.object_id,OE.object_value,OE.object_value_type,OE.object_value_UOM,OE.object_value_data_type,OE.object_operation,OE.object_operation_command,OE.extension_attribute,OE.extension_value,OE.extension_value_UOM,OE.extension_value_data_type ,OE.HostServerID,UpdateDateTime,OE.InsertDateTime,OE.UpdatedBy,OE.DataModel,OE.VersionSequence,OE.SourceRecordId,OE.object_id_old,OE.object_value_old,OE.Comment,OE.Col_Changed,OE.ForServerVmDB,OE.source_id,OE._id from ST_OBJECT_EXTENSION OE,st_ObjectDistributionList ODL where OE.object_database=ODL.DBName  and OE.object_Table=ODL.ObjectName"
+            strsql = "select OE.object_database,OE.object_Table,OE.object_PK_attribute,OE.object_attribute,OE.object_id,OE.object_value,OE.object_value_type,OE.object_value_UOM,OE.object_value_data_type,OE.object_operation,OE.object_operation_command,OE.extension_attribute,OE.extension_value,OE.extension_value_UOM,OE.extension_value_data_type ,OE.HostServerID,UpdateDateTime,OE.InsertDateTime,OE.UpdatedBy,OE.DataModel,OE.VersionSequence,OE.SourceRecordId,OE.object_id_old,OE.object_value_old,OE.Comment,OE.Col_Changed,OE.ForServerVmDB,OE.source_id,OE.id from ST_OBJECT_EXTENSION OE where "
+
+            'If lbl_ProgramType.Text = "Export" Then
+            'strsql = strsql + " and ODL.LocalExportFlag='Y'"
+            'strsql = strsql + " and OE.HostServerID="
+            'strsql = strsql + "'" + input_ThisInstanceKey + "'"
+            'ElseIf lbl_ProgramType.Text = "Import" Then
+            'strsql = strsql + " and ODL.LocalExportFlag='Y'"
+            'strsql = strsql + " and OE.HostServerID<>"
+            'strsql = strsql + "'" + input_ThisInstanceKey + "'"
+            'ElseIf lbl_ProgramType.Text = "Fusion" Then
+            'strsql = strsql + " and ODL.LocalFuseFlag='Y'"
+            'strsql = strsql + " and OE.HostServerID<>"
+            'strsql = strsql + "'" + input_ThisInstanceKey + "'"
+            'End If
+
+            strsql = strsql + " OE.id>"
+            'strsql = strsql + "'" + Convert.ToString(v_FromLastVersionUsed) + "'"
+            strsql = strsql + Convert.ToString(v_FromLastVersionUsed)
+            'strsql = strsql + "'" + lbl_FromLastVersionUsed.Text + "'"
+            strsql = strsql + " and OE.id<="
+            'strsql = strsql + "'" + Convert.ToString(v_FromCurrenDBtVersion) + "'"
+            strsql = strsql + Convert.ToString(v_FromCurrenDBtVersion)
+            'strsql = strsql + "'" + lbl_FromCurrentDBVersion.Text + "'"
+            strsql = strsql + ";"
+            lbl_strsql.Text = strsql
+            'XXXXX XXXXXXXXX XXXXXXXXXXXXXXX The following is for FromConnType SQLConnection. Identical code needs be for Odbc
+            If FromConnType = "OdbcConnection" Then
+                Try
+
+                    OdbcConnectionFrom.Open()
+                    OdbcCommandFrom.CommandText = strsql
+
+                    OdbcReaderFrom = OdbcCommandFrom.ExecuteReader()
+                    int_update_result = 1
+
+                    While (OdbcReaderFrom.Read() = True)
+                        Dim str_insert_result As String
+                        strsql2 = "insert into ST_OBJECT_EXTENSION (object_database,object_Table,object_PK_attribute,object_attribute,object_id,object_value,object_value_type,object_value_UOM,object_value_data_type,object_operation,object_operation_command,extension_attribute,extension_value,extension_value_UOM,extension_value_data_type ,HostServerID,UpdateDateTime,InsertDateTime,UpdatedBy,DataModel,VersionSequence,SourceRecordId,object_id_old,object_value_old,Comment,Col_Changed,ForServerVmDB,source_id) values ("
+                        str_insert_result = OdbcReaderFrom(0).ToString()
+                        lbl_strsqlresult3.Text = OdbcReaderFrom(0).ToString()
+                        v_object_database = OdbcReaderFrom(0).ToString()
+                        v_object_Table = OdbcReaderFrom(1).ToString()
+                        v_object_PK_attribute = OdbcReaderFrom(2).ToString()
+                        v_object_attribute = OdbcReaderFrom(3).ToString()
+                        v_object_id = OdbcReaderFrom(4).ToString()
+                        v_object_value = OdbcReaderFrom(5).ToString()
+                        v_object_value_type = OdbcReaderFrom(6).ToString()
+                        v_object_value_UOM = OdbcReaderFrom(7).ToString()
+                        v_object_value_data_type = OdbcReaderFrom(8).ToString()
+                        v_object_operation = OdbcReaderFrom(9).ToString()
+                        v_object_operation_command = OdbcReaderFrom(10).ToString()
+                        v_extension_attribute = OdbcReaderFrom(11).ToString()
+                        v_extension_value = OdbcReaderFrom(12).ToString()
+                        v_extension_value_UOM = OdbcReaderFrom(13).ToString()
+                        v_extension_value_data_type = OdbcReaderFrom(14).ToString()
+                        v_HostServerID = OdbcReaderFrom(15).ToString()
+                        v_UpdateDateTime = OdbcReaderFrom(16).ToString()
+                        v_InsertDateTime = OdbcReaderFrom(17).ToString()
+                        v_UpdatedBy = OdbcReaderFrom(18).ToString()
+                        v_DataModel = OdbcReaderFrom(19).ToString()
+                        v_VersionSequence = OdbcReaderFrom(20).ToString()
+                        v_SourceRecordId = OdbcReaderFrom(21).ToString()
+                        v_object_id_old = OdbcReaderFrom(22).ToString()
+                        v_object_value_old = OdbcReaderFrom(23).ToString()
+                        v_Comment = OdbcReaderFrom(24).ToString()
+                        v_Col_Changed = OdbcReaderFrom(25).ToString()
+                        v_ForServerVmDB = OdbcReaderFrom(26).ToString()
+                        v_source_id = OdbcReaderFrom(28).ToString()
+                        lbl_retrievestring.Text = lbl_retrievestring.Text + str_insert_result
+                        strsql2 = strsql2 + "'" + v_object_database + "'," + "'" + v_object_Table + "'," + "'" + v_object_PK_attribute + "'," + "'" + v_object_attribute + "'," + "'" + v_object_id + "'," + "'" + v_object_value + "'," + "'" + v_object_value_type + "'," + "'" + v_object_value_UOM + "'," + "'" + v_object_value_data_type + "'," + "'" + v_object_operation + "'," + "'" + v_object_operation_command + "'," + "'" + v_extension_attribute + "'," + "'" + v_extension_value + "'," + "'" + v_extension_value_UOM + "'," + "'" + v_extension_value_data_type + "'," + "'" + v_HostServerID + "'," + "'" + v_UpdateDateTime + "'," + "'" + v_InsertDateTime + "'," + "'" + v_UpdatedBy + "'," + "'" + v_DataModel + "'," + "'" + v_VersionSequence + "'," + "'" + v_SourceRecordId + "'," + "'" + v_object_id_old + "'," + "'" + v_object_value_old + "'," + "'" + v_Comment + "'," + "'" + v_Col_Changed + "'," + "'" + v_ForServerVmDB + "'," + "'" + v_source_id + "')"
+                        lbl_strsql2.Text = strsql2
+                        'end of building insert statement with values
+
+                        'start of insert statement execution. For export, For each row read from local insert happens in DF
+                        If ToConnType = "OdbcConnection" Then
+
+                            OdbcCommandTo.CommandText = strsql2
+                            Try
+
+                                'OdbcReaderTo = OdbcCommandTo.ExecuteReader()
+                                OdbcCommandTo.ExecuteNonQuery()
+                            Catch ex As Exception
+                                Console.WriteLine(ex.Message)
+                                lbl_strsqlresult4.Text = "error in inserting into OdbcConnection st_object_extension"
+                                Dim FILE_NAME As String = "C:\temp\log_CopyFromTo.txt"
+                                My.Computer.FileSystem.WriteAllText _
+                                    (FILE_NAME, vbCrLf, True)
+                                My.Computer.FileSystem.WriteAllText _
+                                    (FILE_NAME, Today() + "--" + lbl_strsqlresult4.Text, True)
+                                My.Computer.FileSystem.WriteAllText _
+                                    (FILE_NAME, vbCrLf, True)
+                                My.Computer.FileSystem.WriteAllText _
+                                    (FILE_NAME, Today() + "--" + strsql2, True)
+                                My.Computer.FileSystem.WriteAllText _
+                                (FILE_NAME, Today() + "--" + ex.Message, True)
+                            End Try
+
+                        End If
+                        'build scripts for fusion. starting with check if there is current record and value is latest and differnt
+                        strsqlchecklatest = ""
+
+                    End While
+
+                Catch ex As Exception
+                    Console.WriteLine(ex.Message)
+                    int_update_result = 0
+                    lbl_strsqlresult3.Text = "error in getting data from st_object_extension"
+                    Dim FILE_NAME As String = "C:\temp\log_CopyFromTo.txt"
+                    My.Computer.FileSystem.WriteAllText _
+                (FILE_NAME, vbCrLf, True)
+                    My.Computer.FileSystem.WriteAllText _
+                (FILE_NAME, Today() + "--" + lbl_strsqlresult3.Text, True)
+                    My.Computer.FileSystem.WriteAllText _
+                (FILE_NAME, vbCrLf, True)
+                    My.Computer.FileSystem.WriteAllText _
+                (FILE_NAME, Today() + "--" + strsql, True)
+                    My.Computer.FileSystem.WriteAllText _
+                    (FILE_NAME, Today() + "--" + ex.Message, True)
+                End Try
+                OdbcConnectionFrom.Close()
+            End If
+            '
+            If int_update_result > 0 Then
+                'Response.Redirect("st_admin2.aspx")
+            End If
+
+'BLOCK D: updating program parameter
+            'updating the current point at the local program parameter.  this should use x_dns_sqlserver_sitaware.
+            'specific program is updated locally
+
+            'The following to catch if the select or while loop got interupted. Thus, v_source_id which is max(_id) of the from object extention table.
+            'If Convert.ToString(v_source_id) = "" Then
+            'v_FromCurrenDBtVersion = v_FromLastVersionUsed
+            'Else
+            'v_FromCurrenDBtVersion = v_source_id
+            'End If
+
+            strsql = "update ST_PROGRAM_PARAMETER set FromLastVersionUsed="
+            strsql = strsql + "'" + Convert.ToString(v_FromCurrenDBtVersion) + "'"
+            strsql = strsql + " where id="
+            strsql = strsql + "'" + input__id + "';"
+
+            If ThisConnType = "OdbcConnection" Then
+                'OdbcConnectionThis2.Open()
+                OdbcCommandThis2.CommandText = strsql
+                Try
+                    OdbcConnectionThis2.Open()
+                    'OdbcReaderThis = OdbcCommandThis.ExecuteReader()
+                    OdbcCommandThis2.ExecuteNonQuery()
+                    int_update_result = 1
+                    'While (OdbcReaderThis.Read() = True)
+                    'Dim str_insert_result As String
+                    'lbl_strsqlresult1.Text = OdbcReaderThis(0).ToString()
+                    'End While
+                Catch ex As Exception
+                    Console.WriteLine(ex.Message)
+                    int_update_result = 0
+                    lbl_strsqlresult1.Text = "error in updating OdbcConnection FromLastVersionUsed"
+                End Try
+                OdbcConnectionThis2.Close()
+            End If
+
+            'end of actual import export program
+            Threading.Thread.Sleep(pollingperiod)
+            count1 = count1 + 1
+            fld_currentcounter_export.Text = count1
+        Loop
+
+        OdbcConnectionThis.Close()
+        OdbcConnectionThis2.Close()
+        OdbcConnectionFrom.Close()
+        OdbcConnectionFrom2.Close()
+        lbl_endtimestamp.Text = DateTime.Now.ToString
+    End Sub
+
