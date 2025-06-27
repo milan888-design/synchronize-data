@@ -15,6 +15,8 @@ flowchart TD
     B[Outbox-Server1] -->|Transport changes| D[Inbox-Server3]  
     C[Inbox-Server2]   -->|Import/merge changes| E[Server2-Database2] 
     D[Inbox-Server3]   -->|Import/merge change| F[Server3-Database3]   
+    F[Server3-Database3] -->|Export Changes| G[Outbox-Server3]  
+    G[Outbox-Server3] -->|Transport changes| C[Inbox-Server2]  
 ```  
 
 Export change - can be done using API or database triggers.  
