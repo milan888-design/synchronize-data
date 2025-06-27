@@ -10,10 +10,15 @@ DataJoin.net provides in-depth education and consulting on database synchronizat
 ## Flowchart  Data synchronization  
 ```mermaid  
 flowchart TD  
-    A[Server1-Database1] -->|Changes| B[Outbox-Server1]  
-    B[Outbox-Server1] -->|Transport change| C[Inbox-Server2]  
-    B[Outbox-Server1] -->|Transport change| D[Inbox-Server3]  
+    A[Server1-Database1] -->|Export Changes| B[Outbox-Server1]  
+    B[Outbox-Server1] -->|Transport changes| C[Inbox-Server2]  
+    B[Outbox-Server1] -->|Transport changes| D[Inbox-Server3]  
     C[Inbox-Server2]   -->|Import/merge changes| E[Server2-Database2] 
     D[Inbox-Server3]   -->|Import/merge change| F[Server3-Database3]   
 ```  
 
+Export change - can be done using API or database triggers.  
+Tranport changes - can be done using odbc/jdbc or queueing (kafka, etc.)
+Import changes - can be done using any programming language.
+
+Example programs are: transport_changes.py (python), import_changes.py (python)
