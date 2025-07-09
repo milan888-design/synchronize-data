@@ -112,20 +112,21 @@ Flow chart: How changes from testapp1 and testapp2 are synchronized
 dj6_feature_2:components:code:flowchart  
  
 # ds_change_transport.py   
-dj6_feature_2:components:code:ds_change_tranport.py
-This is simply moving data from outbox of testapp1 to inbox of testapp2
-Block 0:  read ds_program_parameter table for specific  id for last pointer of testapp1 outbox and destination testapp2 info.
-BLOCK A: Define database connection based on source and destination (testapp1 and testapp2)
-BLOCK B: read the last or maximum id number from ds_change_outbox table
-BLOCK C: Retrieve data between last point and maximum pointer from ds_change_outbox and writing data to ds_change_inbox of testapp2.
-BLOCK D: updating program parameter with status and latest pointers
+dj6_feature_2:components:code:ds_change_tranport.py  
+This is simply moving data from outbox of testapp1 to inbox of testapp2  
+Block 0:  read ds_program_parameter table for specific  id for last pointer of testapp1 outbox and destination testapp2 info.  
+BLOCK A: Define database connection based on source and destination (testapp1 and testapp2)  
+BLOCK B: read the last or maximum id number from ds_change_outbox table  
+BLOCK C: Retrieve data between last point and maximum pointer from ds_change_outbox and writing   data to ds_change_inbox of testapp2.  
+BLOCK D: updating program parameter with status and latest pointers  
 
 # ds_import_changes.py  
-dj6_feature_2:components:code:ds_change_import.py
-This is simply moving data from inbox of testapp2  to testapp2 app tables
-Block 0: read ds_program_parameter table for specific  id for last pointer of testapp2 inbox and destination testapp2 info.
-BLOCK A: Define database connection (testapp2)
-BLOCK B: read the last or maximum id number from ds_change_inbox table
-BLOCK C: Retrieve data between last point and maximum pointer from ds_change_inbox and perform data operations (insert, update, delete)  in testapp2 tables.
-BLOCK D: updating program parameter with status and latest pointers
+dj6_feature_2:components:code:ds_change_import.py  
+This is simply moving data from inbox of testapp2  to testapp2 app tables  
+Block 0: read ds_program_parameter table for specific  id for last pointer of testapp2 inbox and destination testapp2 info.  
+BLOCK A: Define database connection (testapp2)  
+BLOCK B: read the last or maximum id number from ds_change_inbox table  
+BLOCK C: Retrieve data between last point and maximum pointer from ds_change_inbox and perform data operations (insert, update, delete)  in testapp2 tables.  
+BLOCK D: updating program parameter with status and latest pointers  
+
 
