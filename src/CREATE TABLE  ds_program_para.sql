@@ -1,0 +1,22 @@
+CREATE TABLE public.ds_program_parameter (
+    id text,
+    programtype text,
+    description text,
+    active_flag text,
+    status text,
+    fromserver text,
+    fromdb text,
+    fromtable text,
+    fromconnectionstring text,
+    fromoutboxpointer text,
+    toserver text,
+    todb text,
+    totable text,
+    toconnectionstring text,
+    sort_ty text,
+    sort_seq text,
+    org_id text,
+    update_datetime text,
+    updated_by_user text,
+    updated_by_server text
+);
