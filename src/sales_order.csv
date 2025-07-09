@@ -1,0 +1,3 @@
+"order_id","order_type","description","product_type_name","customer_id","quantity","order_date","update_datetime","updated_by_user","updated_by_server"
+"ord2","wholesale","old order change1","desktop","c1","100","5/25/2025","06/25/2025  10:30:00 AM","mtp","server1"
+"ord1","retail","new order","laptop","c1","200","4/25/2025","06/25/2025  10:15:00 AM","mtp","server1"
