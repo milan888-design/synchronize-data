@@ -7,6 +7,9 @@ Solution: To achieve database synchronization, consider various technologies suc
 
 DataJoin.net provides in-depth education and consulting on database synchronization.  
 
+milan@datajoin.net  
+http://datajoin.net  
+
 ## Flowchart  Data synchronization  
 ```mermaid  
 flowchart TD  
